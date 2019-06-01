@@ -1,0 +1,23 @@
+header {
+  display: grid;
+  grid-template-columns: 97px 1fr;
+  height: 48px;
+  background-color: $off-black;
+  border-bottom: 1px solid $dark-grey;
+  padding: 0 1.25rem;
+}
+
+.logo-wrap {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+
+  .logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .title {
+    width: 57px;
+  }
+}
