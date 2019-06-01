@@ -3,9 +3,7 @@
 
 // Helpers
 @import "./helpers/variables";
-
-// Vendor
-@import "./vendor/normalize";
+@import "./helpers/normalize";
 
 // Layouts
 @import "./base/defaults";
