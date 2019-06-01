@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 1.25rem 1.5rem;
+
+  .content {
+    width: 648px;
+  }
+
+  .sidebar {
+    width: 312px;
+    background: $off-black;
+    border-radius: .3125rem .3125rem .25rem .25rem;
+    padding: .75rem;
+
+    h3 {
+      font-size: $base-font-size;
+      margin-top: .5rem;
+    }
+
+  }
+
+}
