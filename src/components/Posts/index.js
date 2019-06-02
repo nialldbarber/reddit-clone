@@ -1,33 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 
 export default function Posts() {
-  const [subredditSearch, setSubredditSearch] = useState('');
+  // Logic below inspired by: https://www.youtube.com/watch?v=k6CepxRngHo&list=LLmvG5jaA89_JGo6GNKAj8ow&index=2&t=0s
 
+  // fetching post & config
   const postsPerRequest = 100;
   const maxPostsToFetch = 500;
   const maxRequests = maxPostsToFetch / postsPerRequest;
   const responses = [];
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // get value of input
-    const subreddit = subredditSearch;
+  useEffect(() => {
+    const subreddit = 'pics';
     // pass down to fetchPosts function
     fetchPosts(subreddit);
-  };
+  });
 
-  const fetchPosts = async (subreddit, afterParam) => {
-    const response = await fetch(
-      `https://www.reddit.com/r/${subreddit}.json?limit=${postsPerRequest}${afterParam ? `&after=${afterParam}` : ''}`
-    );
+  const fetchPosts = async (subreddit) => {
+    // fetch subreddit
+    const response = await fetch(`https://www.reddit.com/r/${subreddit}.json?limit=${postsPerRequest}`);
+    // get the json format of fetch
     const responseJSON = await response.json();
+    // push that into responses array
     responses.push(responseJSON);
-
+    // if there are more posts to fetch, continue to fetch posts
     if (responseJSON.data.after && responses.length < maxRequests) {
       fetchPosts(subreddit, responseJSON.data.after);
       return;
     }
-
+    // send responses to parseResults function
     parseResults(responses);
   };
 
@@ -38,56 +38,48 @@ export default function Posts() {
       allPosts.push(...response.data.children);
     });
 
-    const statsByUser = {};
+    console.log(allPosts);
 
-    allPosts.forEach(({ data: { author, score } }) => {
-      statsByUser[author] = !statsByUser[author]
+    const postData = {};
+
+    allPosts.forEach(({ data: { author, title, subreddit_name_prefixed } }) => {
+      postData[author] = !postData[author]
         ? {
-            postCount: 1,
-            score,
+            title,
+            subreddit_name_prefixed,
           }
         : {
-            postCount: statsByUser[author].postCount + 1,
-            score: statsByUser[author].score + score,
+            title: postData[author].title + title,
+            subreddit_name_prefixed: postData[author].subreddit_name_prefixed + subreddit_name_prefixed,
           };
     });
 
-    const userList = Object.keys(statsByUser).map((username) => ({
+    const userList = Object.keys(postData).map((username) => ({
       username,
-      score: statsByUser[username].score,
-      postCount: statsByUser[username].postCount,
+      title: postData[username].title,
+      subreddit_name_prefixed: postData[username].subreddit_name_prefixed,
     }));
 
     const sortedList = userList.sort((userA, userB) => userB.score - userA.score);
 
-    displayRankings(sortedList);
+    displayPosts(sortedList);
   };
 
-  const displayRankings = (sortedList) => {
+  const displayPosts = (sortedList) => {
     const container = document.getElementById('container');
-    sortedList.forEach(({ username, score, postCount }, i) => {
-      const rank = i + 1;
+    sortedList.forEach(({ username, title }) => {
       const userCard = document.createElement('a');
       userCard.href = `https://www.reddit.com/user/${username}`;
       userCard.classList.add('user-card');
-      userCard.innerText = `${rank}. ${username} - ${postCount} post(s) - ${score} point(s)`;
+      userCard.innerText = `${title} - ${username}`;
 
       container.appendChild(userCard);
     });
   };
 
-  // React events
-  const handleChange = (e) => {
-    setSubredditSearch(e.target.value);
-  };
-
   return (
     <div>
       <h1>Posts</h1>
-      <form onSubmit={handleSubmit}>
-        <input value={subredditSearch} onChange={handleChange} />
-        <button type="submit">Click me</button>
-      </form>
       <div id="container" />
     </div>
   );
