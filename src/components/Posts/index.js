@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 export default function Posts() {
-  const [subredditSearch, setSubredditSearch] = useState("");
+  const [subredditSearch, setSubredditSearch] = useState('');
 
   const postsPerRequest = 100;
   const maxPostsToFetch = 500;
   const maxRequests = maxPostsToFetch / postsPerRequest;
   const responses = [];
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     // get value of input
     const subreddit = subredditSearch;
@@ -18,9 +18,7 @@ export default function Posts() {
 
   const fetchPosts = async (subreddit, afterParam) => {
     const response = await fetch(
-      `https://www.reddit.com/r/${subreddit}.json?limit=${postsPerRequest}${
-        afterParam ? `&after=${afterParam}` : ""
-      }`
+      `https://www.reddit.com/r/${subreddit}.json?limit=${postsPerRequest}${afterParam ? `&after=${afterParam}` : ''}`
     );
     const responseJSON = await response.json();
     responses.push(responseJSON);
@@ -33,47 +31,45 @@ export default function Posts() {
     parseResults(responses);
   };
 
-  const parseResults = responses => {
+  const parseResults = (responses) => {
     const allPosts = [];
 
-    responses.forEach(response => {
+    responses.forEach((response) => {
       allPosts.push(...response.data.children);
     });
 
-    let statsByUser = {};
+    const statsByUser = {};
 
     allPosts.forEach(({ data: { author, score } }) => {
       statsByUser[author] = !statsByUser[author]
         ? {
             postCount: 1,
-            score
+            score,
           }
         : {
             postCount: statsByUser[author].postCount + 1,
-            score: statsByUser[author].score + score
+            score: statsByUser[author].score + score,
           };
     });
 
-    const userList = Object.keys(statsByUser).map(username => ({
+    const userList = Object.keys(statsByUser).map((username) => ({
       username,
       score: statsByUser[username].score,
-      postCount: statsByUser[username].postCount
+      postCount: statsByUser[username].postCount,
     }));
 
-    const sortedList = userList.sort(
-      (userA, userB) => userB.score - userA.score
-    );
+    const sortedList = userList.sort((userA, userB) => userB.score - userA.score);
 
     displayRankings(sortedList);
   };
 
-  const displayRankings = sortedList => {
-    const container = document.getElementById("container");
+  const displayRankings = (sortedList) => {
+    const container = document.getElementById('container');
     sortedList.forEach(({ username, score, postCount }, i) => {
-      let rank = i + 1;
-      const userCard = document.createElement("a");
+      const rank = i + 1;
+      const userCard = document.createElement('a');
       userCard.href = `https://www.reddit.com/user/${username}`;
-      userCard.classList.add("user-card");
+      userCard.classList.add('user-card');
       userCard.innerText = `${rank}. ${username} - ${postCount} post(s) - ${score} point(s)`;
 
       container.appendChild(userCard);
@@ -81,7 +77,7 @@ export default function Posts() {
   };
 
   // React events
-  const handleChange = e => {
+  const handleChange = (e) => {
     setSubredditSearch(e.target.value);
   };
 
