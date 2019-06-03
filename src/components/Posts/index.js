@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import uuid4 from 'uuid/v4';
+import BottomScrollListener from 'react-bottom-scroll-listener';
 import Post from 'components/Post';
 
 /**
@@ -15,7 +16,7 @@ export default class Posts extends Component {
     posts: [],
     allPosts: [],
     subreddit: 'learnjavascript',
-    postsPerRequest: 10,
+    postsPerRequest: 15,
     redditPosts: [
       {
         title: '',
@@ -25,10 +26,12 @@ export default class Posts extends Component {
         thumbnail_width: '',
       },
     ],
+    bottomReached: false,
   };
 
   async componentDidMount() {
     const { data, posts, allPosts, subreddit, postsPerRequest } = this.state;
+
     const response = await fetch(`https://www.reddit.com/r/${subreddit}.json?limit=${postsPerRequest}`);
     const json = await response.json();
     posts.push(json);
@@ -50,11 +53,17 @@ export default class Posts extends Component {
     });
   }
 
+  handleScroll = () => {
+    console.log('reached');
+    this.setState({
+      bottomReached: true,
+    });
+  };
+
   render() {
-    const { redditPosts, data } = this.state;
-    console.log(data);
+    const { redditPosts, bottomReached } = this.state;
     return (
-      <div>
+      <BottomScrollListener onBottom={this.handleScroll}>
         {redditPosts.map((item) => (
           <Post
             key={uuid4()}
@@ -65,7 +74,8 @@ export default class Posts extends Component {
             height={item.height}
           />
         ))}
-      </div>
+        <p className={bottomReached === true ? 'show stuff' : 'stuff'}>hello</p>
+      </BottomScrollListener>
     );
   }
 }

@@ -6,7 +6,7 @@ export default function Post({ title, sub, thumbnail, width, height }) {
     <div className="post">
       <h2>{title}</h2>
       <p>{sub}</p>
-      <img src={thumbnail} alt={title} style={{ width, height }} />
+      {thumbnail === 'self' ? '' : <img src={thumbnail} alt={title} style={{ width, height }} />}
     </div>
   );
 }

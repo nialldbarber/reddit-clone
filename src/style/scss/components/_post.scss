@@ -10,3 +10,12 @@
   }
 
 }
+
+
+.stuff {
+  display: none;
+
+  &.show {
+    display: block;
+  }
+}
