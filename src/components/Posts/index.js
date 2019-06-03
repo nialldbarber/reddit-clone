@@ -2,13 +2,20 @@ import React, { Component } from 'react';
 import uuid4 from 'uuid/v4';
 import Post from 'components/Post';
 
+/**
+ * TODO:
+ *
+ * * when you reach the bottom of the page
+ * * request the next 10 posts
+ */
+
 export default class Posts extends Component {
   state = {
     data: [],
     posts: [],
     allPosts: [],
     subreddit: 'learnjavascript',
-    postsPerRequest: 500,
+    postsPerRequest: 10,
     redditPosts: [
       {
         title: '',
