@@ -12,6 +12,9 @@ export default class Posts extends Component {
       {
         title: '',
         sub: '',
+        thumbnail: '',
+        thumbnail_height: '',
+        thumbnail_width: '',
       },
     ],
   };
@@ -29,19 +32,30 @@ export default class Posts extends Component {
       allPosts.push(...post.data.children);
     });
 
-    allPosts.forEach(({ data: { title, subreddit_name_prefixed } }) => {
+    allPosts.forEach(({ data: { title, subreddit_name_prefixed, thumbnail, thumbnail_height, thumbnail_width } }) => {
       this.setState((prevState) => ({
-        samplePost: [...prevState.samplePost, { title, sub: subreddit_name_prefixed }],
+        samplePost: [
+          ...prevState.samplePost,
+          { title, sub: subreddit_name_prefixed, thumbnail, height: thumbnail_height, width: thumbnail_width },
+        ],
       }));
     });
   }
 
   render() {
-    const { samplePost } = this.state;
+    const { samplePost, data } = this.state;
+    console.log(data);
     return (
       <div>
         {samplePost.map((item, i) => (
-          <Post key={i} title={item.title} sub={item.sub} />
+          <Post
+            key={i}
+            title={item.title}
+            sub={item.sub}
+            thumbnail={item.thumbnail}
+            width={item.width}
+            height={item.height}
+          />
         ))}
       </div>
     );
