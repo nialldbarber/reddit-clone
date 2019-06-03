@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import uuid4 from 'uuid/v4';
 import Post from 'components/Post';
 
 export default class Posts extends Component {
@@ -8,7 +9,7 @@ export default class Posts extends Component {
     allPosts: [],
     subreddit: 'learnjavascript',
     postsPerRequest: 500,
-    samplePost: [
+    redditPosts: [
       {
         title: '',
         sub: '',
@@ -34,8 +35,8 @@ export default class Posts extends Component {
 
     allPosts.forEach(({ data: { title, subreddit_name_prefixed, thumbnail, thumbnail_height, thumbnail_width } }) => {
       this.setState((prevState) => ({
-        samplePost: [
-          ...prevState.samplePost,
+        redditPosts: [
+          ...prevState.redditPosts,
           { title, sub: subreddit_name_prefixed, thumbnail, height: thumbnail_height, width: thumbnail_width },
         ],
       }));
@@ -43,13 +44,13 @@ export default class Posts extends Component {
   }
 
   render() {
-    const { samplePost, data } = this.state;
+    const { redditPosts, data } = this.state;
     console.log(data);
     return (
       <div>
-        {samplePost.map((item, i) => (
+        {redditPosts.map((item) => (
           <Post
-            key={i}
+            key={uuid4()}
             title={item.title}
             sub={item.sub}
             thumbnail={item.thumbnail}
