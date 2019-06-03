@@ -4,7 +4,7 @@
 
 - [ ] Header
 
-  - [ ] Logo
+  - [x] Logo
   - [ ] Search bar
   - [ ] Dark mode
 
